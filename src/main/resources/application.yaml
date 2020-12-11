@@ -1,0 +1,35 @@
+spring:
+  kafka:
+    properties:
+#      bootstrap.servers: localhost:9092
+      bootstrap.servers: pkc-419q3.us-east4.gcp.confluent.cloud:9092
+      sasl.mechanism: PLAIN
+      sasl.jass.config: "org.apache.kafka.common.security.plain.PlainLoginModule   required username='QPPFXBDPJAAQCF77'   password='nUniOtH157B6C4SDplxQNl2yHE1yRcj90c33JduKMeUoAyhNXcFlAZR79WA06gpG';"
+      security.protocol: SASL_SSL
+      streams:
+        replication-factor: 3
+  cloud:
+    stream:
+      function:
+        definition: produceChuckNorris;consumeChuckNorris
+      bindings:
+        # kafka producer
+        produceChuchNorris-out-0:
+          binder: kafka
+          destination: facts
+          producer:
+            partition-count: 4
+            useNativeEncoding: true
+        # kafka consumer
+        consumeChuckNorris-in-0:
+          binder: kafka
+          destination: facts
+          group: KotlinFactsOutputter
+      kafka:
+        binder:
+          producer-properties:
+            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+            value.serializer: org.apache.kafka.common.serialization.StringSerializer
+          consumer-properties:
+            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+            value.serializer: org.apache.kafka.common.serialization.StringSerializer
